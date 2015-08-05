@@ -1,20 +1,21 @@
-package main 
+package main
 
 import (
-	"net/http"
-	"log"
 	"io"
+	"log"
+	"net/http"
 )
 
 func main() {
+	log.Println("proxy started")
 	http.HandleFunc("/", defaultHandler)
-	http.ListenAndServe(":8080",nil)
+	http.ListenAndServe(":8088", nil)
 }
 
 // Default Request Handler
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	client := http.Client{}
-	req, _ := http.NewRequest(r.Method, r.RequestURI, nil)
+	req, _ := http.NewRequest(r.Method, r.RequestURI, r.Body)
 	req.Header.Set("Range", r.Header.Get("Range"))
 	resp, err := client.Do(req)
 	if err != nil {
@@ -30,4 +31,3 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
-
